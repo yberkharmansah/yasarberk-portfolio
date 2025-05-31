@@ -41,7 +41,7 @@ const scrollProjects = (direction) => {
     <div v-else>
       <section id="about" class="d-flex flex-column align-items-center justify-content-center vh-100 p-4 bg-dark text-center shadow-lg mb-0 position-relative overflow-hidden">
         <div class="position-absolute w-100 h-100 pattern-bg opacity-25"></div>
-        <div class="z-10">
+        <div class="z-10 d-flex flex-column align-items-center justify-content-center text-center w-100 h-100 p-3 p-md-5">
           <img :src="profileImage" alt="Profil Resmi" class="rounded-circle img-fluid mb-4 border border-5 border-primary shadow-lg" style="width: 150px; height: 150px; object-fit: cover;">
           <h1 class="display-4 fw-bold text-white animate__animated animate__fadeInDown">{{ about?.heading || 'Hoş Geldiniz!' }}</h1>
           <p class="lead mt-3 text-white-50 mx-auto animate__animated animate__fadeInUp" style="max-width: 700px;">
@@ -213,7 +213,6 @@ const scrollProjects = (direction) => {
   height: 50px;
   background-color: rgba(0, 0, 0, 0.7);
   border-radius: 50%;
-  /* Buton içeriğini ortalamak için eklendi */
   display: flex;
   align-items: center; /* Dikeyde ortala */
   justify-content: center; /* Yatayda ortala */
@@ -244,7 +243,6 @@ const scrollProjects = (direction) => {
   height: 25px;
   background-size: 100% 100%;
   filter: brightness(1.5);
-  /* İkonu tam ortalamak için ek stil, eğer ikon kendisi dikeyde/yatayda tam ortalanmıyorsa */
   display: block; /* Flexbox içinde kendi boyutunu alması için */
 }
 
