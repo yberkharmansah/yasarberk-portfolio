@@ -1,0 +1,36 @@
+/* src/style.css */
+
+/* Kendi özel stilleriniz buraya eklenebilir */
+html {
+  scroll-behavior: smooth; /* Yumuşak kaydırma efekti için */
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* Bootstrap'in kendi koyu mod desteği var, veya manuel stil uygulayabiliriz */
+  background-color: #212529; /* Bootstrap dark background */
+  color: #f8f9fa; /* Bootstrap dark text */
+}
+
+/* Scrollbar stilini isteğe bağlı olarak güncelleyebilirsiniz */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #343a40;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #6c757d;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #868e96;
+}
