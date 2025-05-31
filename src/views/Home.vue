@@ -39,9 +39,9 @@ const scrollProjects = (direction) => {
     <div v-if="loading" class="text-center py-5">Yükleniyor...</div>
     <div v-else-if="error" class="text-center py-5 text-danger">Hata: {{ error }}</div>
     <div v-else>
-      <section id="about" class="d-flex flex-column align-items-center justify-content-center vh-100 p-4 bg-dark text-center shadow-lg mb-0 position-relative overflow-hidden">
+      <section id="about" class="d-flex flex-column align-items-center justify-content-center p-4 bg-dark text-center shadow-lg mb-0 position-relative overflow-hidden">
         <div class="position-absolute w-100 h-100 pattern-bg opacity-25"></div>
-        <div class="z-10 d-flex flex-column align-items-center justify-content-center text-center w-100 h-100 p-3 p-md-5">
+        <div class="z-10 d-flex flex-column align-items-center justify-content-center text-center w-100 h-100 px-3 py-5 py-md-5">
           <img :src="profileImage" alt="Profil Resmi" class="rounded-circle img-fluid mb-4 border border-5 border-primary shadow-lg" style="width: 150px; height: 150px; object-fit: cover;">
           <h1 class="display-4 fw-bold text-white animate__animated animate__fadeInDown">{{ about?.heading || 'Hoş Geldiniz!' }}</h1>
           <p class="lead mt-3 text-white-50 mx-auto animate__animated animate__fadeInUp" style="max-width: 700px;">
@@ -164,11 +164,6 @@ const scrollProjects = (direction) => {
   display: none; /* Chrome, Safari, Opera */
 }
 
-/* Animasyonlar için Animate.css kütüphanesi kullanılabilir */
-/* Örneğin: npm install animate.css --save */
-/* Ve main.js'e import 'animate.css'; ekleyin */
-/* Aksi takdirde, bu animasyon keyframelerini manuel olarak tanımlamanız gerekir */
-/* Aşağıdaki kodlar Tailwind'den aktarılan animasyonları içerir */
 @keyframes fadeInDown {
   from { opacity: 0; transform: translateY(-20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -254,5 +249,42 @@ const scrollProjects = (direction) => {
   .carousel-control-next-proj {
     right: 5px;
   }
+section#about {
+  min-height: 100vh; /* Varsayılan olarak ekran yüksekliğinin tamamı */
+  padding-top: 5rem; /* Navbar yüksekliğine göre ayarla */
+  padding-bottom: 3rem; /* Alttan boşluk */
+}
+
+@media (max-width: 767.98px) { /* Bootstrap'in sm breakpoint'inden küçük ekranlar için */
+  section#about {
+    min-height: 85vh; /* Mobilde daha küçük bir min-height, deneysel değer */
+    padding-top: 2rem; /* Navbar altından başla */
+    padding-bottom: 2rem;
+    align-items: center; /* İçeriği dikeyde ortala */
+    justify-content: center; /* İçeriği yatayda ortala */
+  }
+
+  section#about .z-10 {
+    /* İçerik div'inin dikey hizalamasını ve boşluklarını ayarla */
+    padding-top: 1rem; /* Mobilde daha az üst boşluk */
+    padding-bottom: 1rem; /* Mobilde daha az alt boşluk */
+    /* min-height: auto; kaldırıldı, section'ın min-height'ı yeterli olacak */
+  }
+
+  /* Profil resmi ve başlığın mobil boyutları */
+  section#about img {
+    width: 100px !important; /* Mobilde daha küçük profil resmi */
+    height: 100px !important;
+  }
+
+  section#about h1 {
+    font-size: 2rem !important; /* Mobilde daha küçük başlık */
+    line-height: 1.2 !important; /* Satır yüksekliğini ayarla */
+  }
+
+  section#about p.lead {
+    font-size: 0.9rem !important; /* Mobilde daha küçük paragraf metni */
+  }
+}
 }
 </style>
