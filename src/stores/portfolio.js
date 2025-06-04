@@ -12,6 +12,7 @@ export const usePortfolioStore = defineStore('portfolio', {
     contact: null,
     loading: false,
     error: null,
+    selectedProject: null,
   }),
   actions: { // <-- ACTIONS OBJESİNİN BAŞLANGICI
     async fetchPortfolioContent() {
@@ -86,7 +87,9 @@ export const usePortfolioStore = defineStore('portfolio', {
         this.loading = false;
       }
     },
-
+setSelectedProject(project) {
+      this.selectedProject = project;
+    },
     async uploadImage(file) {
       this.loading = true;
       this.error = null;

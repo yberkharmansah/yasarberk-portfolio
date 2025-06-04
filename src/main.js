@@ -1,4 +1,5 @@
 // src/main.js
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { createApp } from 'vue'
 import './style.css' // Kendi özel CSS'iniz için kalsın
 import App from './App.vue'
@@ -7,7 +8,6 @@ import { createPinia } from 'pinia';
 
 // Bootstrap CSS ve JS'i import edin
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'; // Popper.js dahil
 
 // Font Awesome CSS'i import edin (eğer kullanmaya devam edecekseniz)
 import '@fortawesome/fontawesome-free/css/all.min.css';

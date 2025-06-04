@@ -1,6 +1,8 @@
 <script setup>
 import { onMounted, computed, ref } from 'vue'; // ref'i import et
 import { usePortfolioStore } from '../stores/portfolio';
+import ProjectModal from '../components/ProjectModal.vue'; // ProjectModal import edildi
+import { Modal } from 'bootstrap';
 
 const portfolioStore = usePortfolioStore();
 
@@ -30,6 +32,29 @@ const scrollProjects = (direction) => {
     } else {
       projectsContainer.value.scrollLeft += scrollAmount;
     }
+  }
+};
+
+// Proje açıklamasını kısaltma fonksiyonu
+const truncatedDescription = (description) => {
+  const maxLength = 100; // Kaç karakter görünecek
+  if (!description) return '';
+  if (description.length > maxLength) {
+    return description.substring(0, maxLength) + '... Daha Fazla Oku';
+  }
+  return description;
+};
+
+// Modal'ı açma ve seçili projeyi ayarlama fonksiyonu
+const openProjectModal = (project) => {
+  portfolioStore.setSelectedProject(project); // Seçilen projeyi store'a kaydet
+  
+  const modalElement = document.getElementById('projectDetailModal');
+  if (modalElement) {
+    const projectModal = new Modal(modalElement); // Doğrudan import edilen Modal'ı kullanın
+    projectModal.show();
+  } else {
+    console.error("Modal elementi bulunamadı: #projectDetailModal");
   }
 };
 </script>
@@ -66,27 +91,18 @@ const scrollProjects = (direction) => {
         <div v-else class="position-relative w-100">
           <div ref="projectsContainer" class="d-flex overflow-auto pb-3 px-0 no-scrollbar" style="scroll-behavior: smooth;">
             <div v-for="project in projects" :key="project.id"
-                 class="card bg-secondary text-white m-3 shadow-lg flex-shrink-0" style="min-width: 300px; max-width: 350px;">
-              <img v-if="project.imageUrl" :src="project.imageUrl" :alt="project.title" class="card-img-top" style="height: 180px; object-fit: cover;">
+                 class="card bg-secondary text-white m-3 shadow-lg flex-shrink-0"
+                 style="min-width: 300px; max-width: 350px; cursor: pointer;"
+                 @click="openProjectModal(project)"> <img v-if="project.imageUrl" :src="project.imageUrl" :alt="project.title" class="card-img-top" style="height: 180px; object-fit: cover;">
               <div class="card-body">
                 <h3 class="card-title fs-4 text-info">{{ project.title }}</h3>
-                <p class="card-text text-white-75" style="font-size: 0.9rem;">{{ project.description }}</p>
+                <p class="card-text text-white-75" style="font-size: 0.9rem;">{{ truncatedDescription(project.description) }}</p>
                 <div class="d-flex flex-wrap gap-2 mb-3">
                   <span v-for="tech in project.technologies" :key="tech" class="badge bg-primary rounded-pill">
                     {{ tech }}
                   </span>
                 </div>
-                <div class="d-flex justify-content-end gap-2">
-                  <a v-if="project.liveDemoUrl" :href="project.liveDemoUrl" target="_blank"
-                     class="btn btn-success btn-sm d-flex align-items-center">
-                    <i class="fas fa-play-circle me-2"></i> Canlı Demo
-                  </a>
-                  <a v-if="project.githubUrl" :href="project.githubUrl" target="_blank"
-                     class="btn btn-dark btn-sm d-flex align-items-center">
-                    <i class="fab fa-github me-2"></i> GitHub
-                  </a>
                 </div>
-              </div>
             </div>
           </div>
           <button v-if="projects.length > 3" @click="scrollProjects('left')" class="carousel-control-prev-proj btn btn-outline-light d-flex align-items-center justify-content-center d-none d-md-block">
@@ -148,12 +164,13 @@ const scrollProjects = (direction) => {
         <p>&copy; {{ new Date().getFullYear() }} Yaşar Berk Harmanşah. Tüm hakları saklıdır.</p>
       </footer>
     </div>
+    <ProjectModal />
   </div>
 </template>
 
 <style scoped>
 /* Bootstrap'in varsayılan responsive davranışları ve utility sınıfları kullanıldığı için
-   burada sadece özel durumlar veya animasyonlar için stil tutulur. */
+    burada sadece özel durumlar veya animasyonlar için stil tutulur. */
 
 /* Tailwind'den kalan no-scrollbar'ı Bootstrap için yeniden yazalım */
 .no-scrollbar {
