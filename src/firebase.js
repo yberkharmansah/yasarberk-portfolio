@@ -6,13 +6,14 @@ import { getStorage } from "firebase/storage"; // Dosya yüklemeleri için stora
 
 // Firebase configuration (Kendi bilgilerinizi buraya yapıştırın)
 const firebaseConfig = {
- apiKey: "AIzaSyAW3KHw1giX5smLJ0dbWtbrXspQX0S-yrA",
-  authDomain: "yasar-berk-harmansah.firebaseapp.com",
-  projectId: "yasar-berk-harmansah",
-  storageBucket: "yasar-berk-harmansah.firebasestorage.app",
-  messagingSenderId: "1096857507778",
-  appId: "1:1096857507778:web:d6d1d4b0dc3f1692c3285b",
-  measurementId: "G-XLWCDY32HR"
+
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase
