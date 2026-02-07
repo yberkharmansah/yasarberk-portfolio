@@ -73,7 +73,7 @@ const openProjectModal = (project) => {
     <div v-else>
       <section id="about" class="d-flex flex-column align-items-center justify-content-center p-4 bg-dark text-center shadow-lg mb-0 position-relative overflow-hidden hero-section">
         <div class="position-absolute w-100 h-100 pattern-bg opacity-25"></div>
-        <div class="z-10 d-flex flex-column align-items-center justify-content-center text-center w-100 h-100 px-3 py-5 py-md-5">
+        <div class="hero-content d-flex flex-column align-items-center justify-content-center text-center w-100 h-100 px-3 py-5 py-md-5">
           <img :src="profileImage" alt="Profil Resmi" class="rounded-circle img-fluid mb-4 border border-5 border-primary shadow-lg" style="width: 150px; height: 150px; object-fit: cover;">
           <h1 class="display-4 fw-bold text-white animate__animated animate__fadeInDown">{{ about?.heading || 'Hoş Geldiniz!' }}</h1>
           <p class="lead mt-3 text-white-50 mx-auto animate__animated animate__fadeInUp" style="max-width: 700px;">
@@ -221,6 +221,13 @@ const openProjectModal = (project) => {
 /* Hakkımda bölümündeki desen arkaplanı */
 .pattern-bg {
   background-image: url('data:image/svg+xml,%3Csvg width="6" height="6" viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%239C92AC" fill-opacity="0.2" fill-rule="evenodd"%3E%3Cpath d="M5 0h1L0 6V5zM6 5v1H5z"/%3E%3C/g%3E%3C/svg%3E');
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
 }
 
 /* Hover efektleri için özel CSS */
