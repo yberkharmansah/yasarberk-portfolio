@@ -6,17 +6,32 @@ html {
 }
 
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   /* Bootstrap'in kendi koyu mod desteği var, veya manuel stil uygulayabiliriz */
-  background-color: #212529; /* Bootstrap dark background */
+  background-color: #0b0f19; /* deeper tech background */
   color: #f8f9fa; /* Bootstrap dark text */
 }
 
 section[id] {
   scroll-margin-top: 90px;
+}
+
+.section-title {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.section-title::after {
+  content: '';
+  width: 48px;
+  height: 3px;
+  background: linear-gradient(90deg, #39c5ff, #8b5cf6);
+  border-radius: 999px;
 }
 
 /* Scrollbar stilini isteğe bağlı olarak güncelleyebilirsiniz */
