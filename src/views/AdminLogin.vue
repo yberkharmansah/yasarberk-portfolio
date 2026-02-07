@@ -9,9 +9,11 @@ const router = useRouter();
 const email = ref('');
 const password = ref('');
 const errorMessage = ref('');
+const successMessage = ref('');
 
 const handleLogin = async () => {
   errorMessage.value = ''; // Hata mesajını temizle
+  successMessage.value = '';
 
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
@@ -21,8 +23,10 @@ const handleLogin = async () => {
     const isAdmin = await checkAdminStatus(user.uid);
 
     if (isAdmin) {
-      alert('Giriş başarılı! Admin paneline yönlendiriliyorsunuz.');
-      router.push({ name: 'AdminDashboard' }); // Admin paneline yönlendir
+      successMessage.value = 'Giriş başarılı! Admin paneline yönlendiriliyorsunuz.';
+      setTimeout(() => {
+        router.push({ name: 'AdminDashboard' });
+      }, 800);
     } else {
       // Admin değilse çıkış yap ve hata mesajı göster
       await auth.signOut();
@@ -78,6 +82,9 @@ const checkAdminStatus = async (uid) => {
             <input type="password" class="form-control bg-dark text-white border-secondary" id="password" v-model="password" required>
           </div>
           <button type="submit" class="btn btn-primary w-100">Giriş Yap</button>
+          <div v-if="successMessage" class="alert alert-success mt-3" role="alert">
+            {{ successMessage }}
+          </div>
           <div v-if="errorMessage" class="alert alert-danger mt-3" role="alert">
             {{ errorMessage }}
           </div>
