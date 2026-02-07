@@ -15,6 +15,10 @@ body {
   color: #f8f9fa; /* Bootstrap dark text */
 }
 
+section[id] {
+  scroll-margin-top: 90px;
+}
+
 /* Scrollbar stilini isteğe bağlı olarak güncelleyebilirsiniz */
 ::-webkit-scrollbar {
   width: 10px;

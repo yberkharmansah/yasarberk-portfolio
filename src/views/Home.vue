@@ -23,6 +23,13 @@ const error = computed(() => portfolioStore.error);
 
 const profileImage = computed(() => about.value?.profileImageUrl || 'https://via.placeholder.com/200/007bff/FFFFFF?text=Profil');
 
+const formatExperienceDate = (value) => {
+  if (!value) return 'Devam Ediyor';
+  const date = value.seconds ? new Date(value.seconds * 1000) : new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Devam Ediyor';
+  return date.toLocaleDateString('tr-TR');
+};
+
 // Projeler slider'ını sağa/sola kaydırma fonksiyonları
 const scrollProjects = (direction) => {
   if (projectsContainer.value) {
@@ -64,23 +71,29 @@ const openProjectModal = (project) => {
     <div v-if="loading" class="text-center py-5">Yükleniyor...</div>
     <div v-else-if="error" class="text-center py-5 text-danger">Hata: {{ error }}</div>
     <div v-else>
-      <section id="about" class="d-flex flex-column align-items-center justify-content-center p-4 bg-dark text-center shadow-lg mb-0 position-relative overflow-hidden">
+      <section id="about" class="d-flex flex-column align-items-center justify-content-center p-4 bg-dark text-center shadow-lg mb-0 position-relative overflow-hidden hero-section">
         <div class="position-absolute w-100 h-100 pattern-bg opacity-25"></div>
-        <div class="z-10 d-flex flex-column align-items-center justify-content-center text-center w-100 h-100 px-3 py-5 py-md-5">
+        <div class="hero-content d-flex flex-column align-items-center justify-content-center text-center w-100 h-100 px-3 py-5 py-md-5">
           <img :src="profileImage" alt="Profil Resmi" class="rounded-circle img-fluid mb-4 border border-5 border-primary shadow-lg" style="width: 150px; height: 150px; object-fit: cover;">
           <h1 class="display-4 fw-bold text-white animate__animated animate__fadeInDown">{{ about?.heading || 'Hoş Geldiniz!' }}</h1>
           <p class="lead mt-3 text-white-50 mx-auto animate__animated animate__fadeInUp" style="max-width: 700px;">
             {{ about?.text || 'Henüz Hakkımda yazısı eklenmemiş.' }}
           </p>
+          <div class="d-flex flex-wrap justify-content-center gap-3 mt-4">
+            <a href="#projects" class="btn btn-info btn-lg shadow-sm">Projelerime Göz At</a>
+            <a href="#contact" class="btn btn-outline-light btn-lg">İletişime Geç</a>
+          </div>
         </div>
       </section>
 
       <section id="social-links" class="py-5 bg-black text-center shadow-sm mb-0">
-        <div class="d-flex justify-content-center gap-4">
+        <div class="d-flex justify-content-center flex-wrap gap-4">
           <a v-for="link in socialLinks" :key="link.name" :href="link.url" target="_blank"
-             class="text-secondary hover:text-primary transition-colors duration-300"
-             :aria-label="link.name">
+             class="text-secondary hover:text-primary text-decoration-none social-link"
+             :aria-label="link.name"
+             :title="link.name">
             <i :class="['fs-2', link.icon]"></i>
+            <span class="small d-block mt-2">{{ link.name }}</span>
           </a>
         </div>
       </section>
@@ -91,7 +104,7 @@ const openProjectModal = (project) => {
         <div v-else class="position-relative w-100">
           <div ref="projectsContainer" class="d-flex overflow-auto pb-3 px-0 no-scrollbar" style="scroll-behavior: smooth;">
             <div v-for="project in projects" :key="project.id"
-                 class="card bg-secondary text-white m-3 shadow-lg flex-shrink-0"
+                 class="card bg-secondary text-white m-3 shadow-lg flex-shrink-0 project-card"
                  style="min-width: 300px; max-width: 350px; cursor: pointer;"
                  @click="openProjectModal(project)"> <img v-if="project.imageUrl" :src="project.imageUrl" :alt="project.title" class="card-img-top" style="height: 180px; object-fit: cover;">
               <div class="card-body">
@@ -102,7 +115,10 @@ const openProjectModal = (project) => {
                     {{ tech }}
                   </span>
                 </div>
-                </div>
+                <button class="btn btn-outline-light btn-sm mt-2">
+                  Detayları Gör
+                </button>
+              </div>
             </div>
           </div>
           <button v-if="projects.length > 3" @click="scrollProjects('left')" class="carousel-control-prev-proj btn btn-outline-light d-flex align-items-center justify-content-center d-none d-md-block">
@@ -124,7 +140,7 @@ const openProjectModal = (project) => {
             <h3 class="card-title fs-4 text-info">{{ exp.company }}</h3>
             <p class="card-subtitle mb-2 text-white-75">{{ exp.position }}</p>
             <p class="card-text text-white-50" style="font-size: 0.9rem;">
-              {{ new Date(exp.startDate.seconds * 1000).toLocaleDateString() }} - {{ exp.endDate ? new Date(exp.endDate.seconds * 1000).toLocaleDateString() : 'Devam Ediyor' }}
+              {{ formatExperienceDate(exp.startDate) }} - {{ formatExperienceDate(exp.endDate) }}
             </p>
             <div v-if="exp.responsibilities && exp.responsibilities.length" class="mt-3">
               <h4 class="fs-5 fw-medium text-white-75">Başlıca Görevler:</h4>
@@ -205,6 +221,13 @@ const openProjectModal = (project) => {
 /* Hakkımda bölümündeki desen arkaplanı */
 .pattern-bg {
   background-image: url('data:image/svg+xml,%3Csvg width="6" height="6" viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%239C92AC" fill-opacity="0.2" fill-rule="evenodd"%3E%3Cpath d="M5 0h1L0 6V5zM6 5v1H5z"/%3E%3C/g%3E%3C/svg%3E');
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
 }
 
 /* Hover efektleri için özel CSS */
@@ -258,6 +281,30 @@ const openProjectModal = (project) => {
   display: block; /* Flexbox içinde kendi boyutunu alması için */
 }
 
+/* Hero ve kart iyileştirmeleri */
+.hero-section {
+  background: radial-gradient(circle at top, rgba(13, 110, 253, 0.25), transparent 55%);
+}
+.social-link {
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.social-link:hover {
+  transform: translateY(-2px);
+}
+.project-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.project-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.35);
+}
+
+section#about {
+  min-height: 100vh; /* Varsayılan olarak ekran yüksekliğinin tamamı */
+  padding-top: 5rem; /* Navbar yüksekliğine göre ayarla */
+  padding-bottom: 3rem; /* Alttan boşluk */
+}
+
 /* responsive düzenleme: küçük ekranlarda butonları biraz içeri çekebiliriz */
 @media (max-width: 768px) {
   .carousel-control-prev-proj {
@@ -266,10 +313,6 @@ const openProjectModal = (project) => {
   .carousel-control-next-proj {
     right: 5px;
   }
-section#about {
-  min-height: 100vh; /* Varsayılan olarak ekran yüksekliğinin tamamı */
-  padding-top: 5rem; /* Navbar yüksekliğine göre ayarla */
-  padding-bottom: 3rem; /* Alttan boşluk */
 }
 
 @media (max-width: 767.98px) { /* Bootstrap'in sm breakpoint'inden küçük ekranlar için */
@@ -302,6 +345,5 @@ section#about {
   section#about p.lead {
     font-size: 0.9rem !important; /* Mobilde daha küçük paragraf metni */
   }
-}
 }
 </style>

@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 import { auth } from '../firebase';
 import { signOut } from 'firebase/auth';
 import { usePortfolioStore } from '../stores/portfolio';
+import AdminModal from '../components/AdminModal.vue';
 
 const router = useRouter();
 const portfolioStore = usePortfolioStore();
@@ -517,37 +518,31 @@ const deleteExperience = async (experienceId) => {
                 </ul>
                 <button class="btn btn-success" @click="openSocialLinkModal()">Yeni Link Ekle</button>
 
-                <div v-if="showingSocialLinkModal" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
-                  <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content bg-secondary text-white">
-                      <div class="modal-header">
-                        <h5 class="modal-title">{{ editingSocialLink ? 'Link Düzenle' : 'Yeni Link Ekle' }}</h5>
-                        <button type="button" class="btn-close btn-close-white" @click="closeSocialLinkModal"></button>
-                      </div>
-                      <div class="modal-body">
-                        <form @submit.prevent="saveSocialLink">
-                          <div class="mb-3">
-                            <label for="linkName" class="form-label">Platform Adı (örn: LinkedIn)</label>
-                            <input type="text" class="form-control bg-dark text-white border-secondary" id="linkName" v-model="currentSocialLinkName" required>
-                          </div>
-                          <div class="mb-3">
-                            <label for="linkUrl" class="form-label">Link URL'si</label>
-                            <input type="url" class="form-control bg-dark text-white border-secondary" id="linkUrl" v-model="currentSocialLinkUrl" required>
-                          </div>
-                          <div class="mb-3">
-                            <label for="linkIcon" class="form-label">İkon Sınıfı (örn: fab fa-linkedin-in)</label>
-                            <input type="text" class="form-control bg-dark text-white border-secondary" id="linkIcon" v-model="currentSocialLinkIcon" required>
-                            <small class="form-text text-white-50">Font Awesome ikon sınıflarını kullanın. Örnek: `fab fa-github`, `fab fa-instagram`</small>
-                          </div>
-                          <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-success me-2">Kaydet</button>
-                            <button type="button" class="btn btn-secondary" @click="closeSocialLinkModal">İptal</button>
-                          </div>
-                        </form>
-                      </div>
+                <AdminModal
+                  :open="showingSocialLinkModal"
+                  :title="editingSocialLink ? 'Link Düzenle' : 'Yeni Link Ekle'"
+                  @close="closeSocialLinkModal"
+                >
+                  <form @submit.prevent="saveSocialLink">
+                    <div class="mb-3">
+                      <label for="linkName" class="form-label">Platform Adı (örn: LinkedIn)</label>
+                      <input type="text" class="form-control bg-dark text-white border-secondary" id="linkName" v-model="currentSocialLinkName" required>
                     </div>
-                  </div>
-                </div>
+                    <div class="mb-3">
+                      <label for="linkUrl" class="form-label">Link URL'si</label>
+                      <input type="url" class="form-control bg-dark text-white border-secondary" id="linkUrl" v-model="currentSocialLinkUrl" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="linkIcon" class="form-label">İkon Sınıfı (örn: fab fa-linkedin-in)</label>
+                      <input type="text" class="form-control bg-dark text-white border-secondary" id="linkIcon" v-model="currentSocialLinkIcon" required>
+                      <small class="form-text text-white-50">Font Awesome ikon sınıflarını kullanın. Örnek: `fab fa-github`, `fab fa-instagram`</small>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                      <button type="submit" class="btn btn-success me-2">Kaydet</button>
+                      <button type="button" class="btn btn-secondary" @click="closeSocialLinkModal">İptal</button>
+                    </div>
+                  </form>
+                </AdminModal>
               </div>
 
               <div v-if="activeSection === 'projects'">
@@ -572,57 +567,52 @@ const deleteExperience = async (experienceId) => {
                 </ul>
                 <button class="btn btn-success" @click="openProjectModal()">Yeni Proje Ekle</button>
 
-                <div v-if="showingProjectModal" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
-                  <div class="modal-dialog modal-dialog-centered modal-lg">
-                    <div class="modal-content bg-secondary text-white">
-                      <div class="modal-header">
-                        <h5 class="modal-title">{{ editingProject ? 'Proje Düzenle' : 'Yeni Proje Ekle' }}</h5>
-                        <button type="button" class="btn-close btn-close-white" @click="closeProjectModal"></button>
-                      </div>
-                      <div class="modal-body">
-                        <form @submit.prevent="saveProject">
-                          <div class="mb-3">
-                            <label for="projectTitle" class="form-label">Proje Başlığı</label>
-                            <input type="text" class="form-control bg-dark text-white border-secondary" id="projectTitle" v-model="currentProjectTitle" required>
-                          </div>
-                          <div class="mb-3">
-                            <label for="projectDescription" class="form-label">Açıklama</label>
-                            <textarea class="form-control bg-dark text-white border-secondary" id="projectDescription" v-model="currentProjectDescription" rows="3" required></textarea>
-                          </div>
-                          <div class="mb-3">
-                            <label for="projectTechnologies" class="form-label">Kullanılan Teknolojiler (virgülle ayırın)</label>
-                            <input type="text" class="form-control bg-dark text-white border-secondary" id="projectTechnologies" v-model="currentProjectTechnologies">
-                            <small class="form-text text-white-50">Örn: `Vue.js, Firebase, Bootstrap`</small>
-                          </div>
-                          <div class="mb-3">
-                            <label for="projectImage" class="form-label">Proje Resmi</label>
-                            <input type="file" class="form-control bg-dark text-white border-secondary" id="projectImage" @change="handleProjectImageChange" accept="image/*">
-                            <div class="mt-2" v-if="currentProjectImageUrl">
-                              <img :src="currentProjectImageUrl" alt="Mevcut Proje Resmi" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
-                            </div>
-                          </div>
-                          <div class="mb-3">
-                            <label for="projectLiveDemoUrl" class="form-label">Canlı Demo URL</label>
-                            <input type="url" class="form-control bg-dark text-white border-secondary" id="projectLiveDemoUrl" v-model="currentProjectLiveDemoUrl">
-                          </div>
-                          <div class="mb-3">
-                            <label for="projectGithubUrl" class="form-label">GitHub URL</label>
-                            <input type="url" class="form-control bg-dark text-white border-secondary" id="projectGithubUrl" v-model="currentProjectGithubUrl">
-                          </div>
-                          <div class="mb-3">
-                            <label for="projectOrder" class="form-label">Sıralama (Sayı)</label>
-                            <input type="number" class="form-control bg-dark text-white border-secondary" id="projectOrder" v-model="currentProjectOrder">
-                            <small class="form-text text-white-50">Projelerin ana sayfada hangi sırada görüneceğini belirler.</small>
-                          </div>
-                          <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-success me-2">Kaydet</button>
-                            <button type="button" class="btn btn-secondary" @click="closeProjectModal">İptal</button>
-                          </div>
-                        </form>
+                <AdminModal
+                  :open="showingProjectModal"
+                  :title="editingProject ? 'Proje Düzenle' : 'Yeni Proje Ekle'"
+                  size="lg"
+                  @close="closeProjectModal"
+                >
+                  <form @submit.prevent="saveProject">
+                    <div class="mb-3">
+                      <label for="projectTitle" class="form-label">Proje Başlığı</label>
+                      <input type="text" class="form-control bg-dark text-white border-secondary" id="projectTitle" v-model="currentProjectTitle" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="projectDescription" class="form-label">Açıklama</label>
+                      <textarea class="form-control bg-dark text-white border-secondary" id="projectDescription" v-model="currentProjectDescription" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                      <label for="projectTechnologies" class="form-label">Kullanılan Teknolojiler (virgülle ayırın)</label>
+                      <input type="text" class="form-control bg-dark text-white border-secondary" id="projectTechnologies" v-model="currentProjectTechnologies">
+                      <small class="form-text text-white-50">Örn: `Vue.js, Firebase, Bootstrap`</small>
+                    </div>
+                    <div class="mb-3">
+                      <label for="projectImage" class="form-label">Proje Resmi</label>
+                      <input type="file" class="form-control bg-dark text-white border-secondary" id="projectImage" @change="handleProjectImageChange" accept="image/*">
+                      <div class="mt-2" v-if="currentProjectImageUrl">
+                        <img :src="currentProjectImageUrl" alt="Mevcut Proje Resmi" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
                       </div>
                     </div>
-                  </div>
-                </div>
+                    <div class="mb-3">
+                      <label for="projectLiveDemoUrl" class="form-label">Canlı Demo URL</label>
+                      <input type="url" class="form-control bg-dark text-white border-secondary" id="projectLiveDemoUrl" v-model="currentProjectLiveDemoUrl">
+                    </div>
+                    <div class="mb-3">
+                      <label for="projectGithubUrl" class="form-label">GitHub URL</label>
+                      <input type="url" class="form-control bg-dark text-white border-secondary" id="projectGithubUrl" v-model="currentProjectGithubUrl">
+                    </div>
+                    <div class="mb-3">
+                      <label for="projectOrder" class="form-label">Sıralama (Sayı)</label>
+                      <input type="number" class="form-control bg-dark text-white border-secondary" id="projectOrder" v-model="currentProjectOrder">
+                      <small class="form-text text-white-50">Projelerin ana sayfada hangi sırada görüneceğini belirler.</small>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                      <button type="submit" class="btn btn-success me-2">Kaydet</button>
+                      <button type="button" class="btn btn-secondary" @click="closeProjectModal">İptal</button>
+                    </div>
+                  </form>
+                </AdminModal>
               </div>
 
               <div v-if="activeSection === 'experiences'">
@@ -643,56 +633,51 @@ const deleteExperience = async (experienceId) => {
                 </ul>
                 <button class="btn btn-success" @click="openExperienceModal()">Yeni Tecrübe Ekle</button>
                 
-                <div v-if="showingExperienceModal" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
-                  <div class="modal-dialog modal-dialog-centered modal-lg">
-                    <div class="modal-content bg-secondary text-white">
-                      <div class="modal-header">
-                        <h5 class="modal-title">{{ editingExperience ? 'İş Tecrübesi Düzenle' : 'Yeni İş Tecrübesi Ekle' }}</h5>
-                        <button type="button" class="btn-close btn-close-white" @click="closeExperienceModal"></button>
+                <AdminModal
+                  :open="showingExperienceModal"
+                  :title="editingExperience ? 'İş Tecrübesi Düzenle' : 'Yeni İş Tecrübesi Ekle'"
+                  size="lg"
+                  @close="closeExperienceModal"
+                >
+                  <form @submit.prevent="saveExperience">
+                    <div class="mb-3">
+                      <label for="expCompany" class="form-label">Şirket Adı</label>
+                      <input type="text" class="form-control bg-dark text-white border-secondary" id="expCompany" v-model="currentExpCompany" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="expPosition" class="form-label">Pozisyon</label>
+                      <input type="text" class="form-control bg-dark text-white border-secondary" id="expPosition" v-model="currentExpPosition" required>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col">
+                        <label for="expStartDate" class="form-label">Başlangıç Tarihi</label>
+                        <input type="date" class="form-control bg-dark text-white border-secondary" id="expStartDate" v-model="currentExpStartDate" required>
                       </div>
-                      <div class="modal-body">
-                        <form @submit.prevent="saveExperience">
-                          <div class="mb-3">
-                            <label for="expCompany" class="form-label">Şirket Adı</label>
-                            <input type="text" class="form-control bg-dark text-white border-secondary" id="expCompany" v-model="currentExpCompany" required>
-                          </div>
-                          <div class="mb-3">
-                            <label for="expPosition" class="form-label">Pozisyon</label>
-                            <input type="text" class="form-control bg-dark text-white border-secondary" id="expPosition" v-model="currentExpPosition" required>
-                          </div>
-                          <div class="row mb-3">
-                            <div class="col">
-                              <label for="expStartDate" class="form-label">Başlangıç Tarihi</label>
-                              <input type="date" class="form-control bg-dark text-white border-secondary" id="expStartDate" v-model="currentExpStartDate" required>
-                            </div>
-                            <div class="col">
-                              <label for="expEndDate" class="form-label">Bitiş Tarihi (Devam Ediyorsa Boş Bırakın)</label>
-                              <input type="date" class="form-control bg-dark text-white border-secondary" id="expEndDate" v-model="currentExpEndDate">
-                            </div>
-                          </div>
-                          <div class="mb-3">
-                            <label for="expResponsibilities" class="form-label">Ana Görevler (virgülle ayırın)</label>
-                            <textarea class="form-control bg-dark text-white border-secondary" id="expResponsibilities" v-model="currentExpResponsibilities" rows="3"></textarea>
-                            <small class="form-text text-white-50">Örn: `API Geliştirme, UI Tasarımı`</small>
-                          </div>
-                          <div class="mb-3">
-                            <label for="expQualifications" class="form-label">Kazanılan Nitelikler (virgülle ayırın)</label>
-                            <input type="text" class="form-control bg-dark text-white border-secondary" id="expQualifications" v-model="currentExpQualifications">
-                            <small class="form-text text-white-50">Örn: `Problem Çözme, Ekip Yönetimi`</small>
-                          </div>
-                          <div class="mb-3">
-                            <label for="expReferences" class="form-label">Referanslar</label>
-                            <textarea class="form-control bg-dark text-white border-secondary" id="expReferences" v-model="currentExpReferences" rows="2"></textarea>
-                          </div>
-                          <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-success me-2">Kaydet</button>
-                            <button type="button" class="btn btn-secondary" @click="closeExperienceModal">İptal</button>
-                          </div>
-                        </form>
+                      <div class="col">
+                        <label for="expEndDate" class="form-label">Bitiş Tarihi (Devam Ediyorsa Boş Bırakın)</label>
+                        <input type="date" class="form-control bg-dark text-white border-secondary" id="expEndDate" v-model="currentExpEndDate">
                       </div>
                     </div>
-                  </div>
-                </div>
+                    <div class="mb-3">
+                      <label for="expResponsibilities" class="form-label">Ana Görevler (virgülle ayırın)</label>
+                      <textarea class="form-control bg-dark text-white border-secondary" id="expResponsibilities" v-model="currentExpResponsibilities" rows="3"></textarea>
+                      <small class="form-text text-white-50">Örn: `API Geliştirme, UI Tasarımı`</small>
+                    </div>
+                    <div class="mb-3">
+                      <label for="expQualifications" class="form-label">Kazanılan Nitelikler (virgülle ayırın)</label>
+                      <input type="text" class="form-control bg-dark text-white border-secondary" id="expQualifications" v-model="currentExpQualifications">
+                      <small class="form-text text-white-50">Örn: `Problem Çözme, Ekip Yönetimi`</small>
+                    </div>
+                    <div class="mb-3">
+                      <label for="expReferences" class="form-label">Referanslar</label>
+                      <textarea class="form-control bg-dark text-white border-secondary" id="expReferences" v-model="currentExpReferences" rows="2"></textarea>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                      <button type="submit" class="btn btn-success me-2">Kaydet</button>
+                      <button type="button" class="btn btn-secondary" @click="closeExperienceModal">İptal</button>
+                    </div>
+                  </form>
+                </AdminModal>
               </div>
 
               <div v-if="activeSection === 'contact'">
@@ -747,12 +732,5 @@ const deleteExperience = async (experienceId) => {
   border-color: var(--bs-primary);
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
   background-color: var(--bs-gray-800) !important; /* Odaklandığında biraz daha açık bir gri */
-}
-/* Modal arkaplanı için */
-.modal.show.d-block {
-  background-color: rgba(0, 0, 0, 0.5);
-}
-.btn-close-white {
-    filter: invert(1) grayscale(100%) brightness(200%);
 }
 </style>
