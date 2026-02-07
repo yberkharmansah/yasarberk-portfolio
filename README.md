@@ -1,16 +1,3 @@
-<<<<<<< HEAD
-# Vue 3 + Vite
-
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
-
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
-=======
-
----
-
-### 2. `yasarberk-portfolio`
-
-```markdown
 # Yaşar Berk Harmanşah - Portföy Sitesi
 
 Ben Kimim?  
@@ -23,11 +10,39 @@ Yazılımcı, oyun geliştirici ve AI meraklısı olarak yaptığım işleri bur
 
 ## Teknolojiler
 - Vue.js
-- TailwindCSS
+- Bootstrap 5
 - GitHub Pages / Netlify (yayın için)
 
 ## Kurulum
 ```bash
 npm install
 npm run dev
->>>>>>> baef7b7a2a2ec8df9a897627f526ba7dc1056bf7
+```
+
+## Ortam Değişkenleri
+Uygulama ve seed script için gerekli environment değişkenlerini `.env` dosyanıza ekleyin.
+
+```bash
+VITE_FIREBASE_API_KEY=...
+VITE_FIREBASE_AUTH_DOMAIN=...
+VITE_FIREBASE_PROJECT_ID=...
+VITE_FIREBASE_STORAGE_BUCKET=...
+VITE_FIREBASE_MESSAGING_SENDER_ID=...
+VITE_FIREBASE_APP_ID=...
+VITE_FIREBASE_MEASUREMENT_ID=...
+VITE_CLOUDINARY_CLOUD_NAME=...
+VITE_CLOUDINARY_UPLOAD_PRESET=...
+
+FIREBASE_API_KEY=...
+FIREBASE_AUTH_DOMAIN=...
+FIREBASE_PROJECT_ID=...
+FIREBASE_STORAGE_BUCKET=...
+FIREBASE_MESSAGING_SENDER_ID=...
+FIREBASE_APP_ID=...
+FIREBASE_MEASUREMENT_ID=...
+```
+
+## Seed (Opsiyonel)
+```bash
+npm run seed-db
+```

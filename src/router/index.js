@@ -32,23 +32,11 @@ const router = createRouter({
   routes
 });
 
-// Firebase Auth durumu için global bir değişken
-let isAuthenticated = false;
-let isAdminUser = false;
-
-// Kullanıcı oturum durumu değiştiğinde güncelleyeceğiz
-onAuthStateChanged(auth, async (user) => {
-  isAuthenticated = !!user;
-  if (user) {
-    isAdminUser = await checkAdminStatus(user.uid);
-  } else {
-    isAdminUser = false;
-  }
-  // Router'ı bekleyen navigasyonları çözmek için gerekirse yönlendirme yapabiliriz.
-  // Örneğin, kullanıcı çıkış yaptığında dashboard'dan login'e atabiliriz.
-  if (!isAuthenticated && router.currentRoute.value.meta.requiresAuth) {
-    router.push({ name: 'AdminLogin' });
-  }
+const getCurrentUser = () => new Promise((resolve) => {
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    unsubscribe();
+    resolve(user);
+  });
 });
 
 // Kullanıcının admin olup olmadığını Firestore'dan kontrol eden fonksiyon (Router guard'ı için)
@@ -64,30 +52,29 @@ router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin);
 
-  // Oturum durumu değişmiş olabilir, onAuthStateChanged'in callback'inin çalışmasını beklemek için
-  // bu kontrolü async yapıyoruz.
-  await new Promise(resolve => {
-    if (auth.currentUser !== undefined) { // auth.currentUser henüz yüklenmediyse bekle
-      resolve();
-    } else {
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        unsubscribe(); // Tek bir kez dinle
-        resolve();
-      });
-    }
-  });
+  if (!requiresAuth && !requiresAdmin) {
+    next();
+    return;
+  }
+
+  const user = auth.currentUser ?? await getCurrentUser();
+  const isAuthenticated = !!user;
 
   if (requiresAuth && !isAuthenticated) {
-    // Kimlik doğrulama gerekiyorsa ve kullanıcı giriş yapmamışsa
     next({ name: 'AdminLogin' });
-  } else if (requiresAdmin && !isAdminUser) {
-    // Admin yetkisi gerekiyorsa ve kullanıcı admin değilse (ama giriş yapmışsa)
-    alert('Bu sayfaya erişim yetkiniz yok.');
-    next({ name: 'Home' }); // Ana sayfaya veya başka bir yere yönlendir
+    return;
   }
-  else {
-    next(); // Devam et
+
+  if (requiresAdmin && user) {
+    const isAdminUser = await checkAdminStatus(user.uid);
+    if (!isAdminUser) {
+      alert('Bu sayfaya erişim yetkiniz yok.');
+      next({ name: 'Home' });
+      return;
+    }
   }
+
+  next();
 });
 
 export default router;

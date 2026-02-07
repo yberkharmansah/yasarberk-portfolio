@@ -1,44 +1,42 @@
 // seedFirestore.js
 import { initializeApp } from "firebase/app";
 import { getFirestore, doc, setDoc, collection } from "firebase/firestore";
-import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
-import { readFileSync } from 'fs'; // Resim okumak için
-import path from 'path'; // Yol işlemleri için
 
-// Firebase configuration (Kendi bilgilerinizi buraya yapıştırın)
-// src/firebase.js dosyanızdaki aynı config'i kullanın
+// Firebase configuration (Ortam değişkenleri üzerinden)
 const firebaseConfig = {
-  apiKey: "AIzaSyAW3KHw1giX5smLJ0dbWtbrXspQX0S-yrA",
-  authDomain: "yasar-berk-harmansah.firebaseapp.com",
-  projectId: "yasar-berk-harmansah",
-  storageBucket: "yasar-berk-harmansah.firebasestorage.app",
-  messagingSenderId: "1096857507778",
-  appId: "1:1096857507778:web:d6d1d4b0dc3f1692c3285b",
-  measurementId: "G-XLWCDY32HR"
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
+  measurementId: process.env.FIREBASE_MEASUREMENT_ID
 };
+
+if (!firebaseConfig.apiKey || !firebaseConfig.authDomain || !firebaseConfig.projectId) {
+  throw new Error('Firebase ortam değişkenleri eksik. Lütfen .env dosyanızı kontrol edin.');
+}
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const storage = getStorage(app);
-
 // Demo verileri
 const portfolioData = {
   about: {
-    heading: "Merhaba, Ben Yasin Berk Harmansah!",
-    text: "Yazılım geliştirmeye tutkuyla bağlı, yenilikçi çözümler üretmeyi seven bir geliştiriciyim. Vue.js, Node.js ve Firebase başta olmak üzere modern web teknolojileriyle projeler geliştirmekteyim. Kullanıcı deneyimine önem veren, temiz ve sürdürülebilir kod yazmayı ilke edinmiş biriyim. Yeni teknolojileri öğrenmeye ve kendimi sürekli geliştirmeye açığım. Boş zamanlarımda kod yazmaktan, yeni konseptleri araştırmaktan ve doğa yürüyüşleri yapmaktan keyif alırım.",
+    heading: "Merhaba, Ben Bir Yazılımcıyım!",
+    text: "Kullanıcı deneyimini merkezine alan modern web uygulamaları geliştiriyorum. Vue.js, Firebase ve çağdaş frontend araçlarıyla üretken, ölçeklenebilir projeler üzerinde çalışmayı seviyorum.",
     profileImageUrl: "https://via.placeholder.com/200/4F46E5/FFFFFF?text=Profil" // Geçici URL, Storage'a yükleyince değişecek
   },
   socialLinks: {
     links: [
-      { name: "LinkedIn", url: "https://www.linkedin.com/in/yberkharmansah/", icon: "fab fa-linkedin-in" },
-      { name: "GitHub", url: "https://github.com/yberkharmansah/", icon: "fab fa-github" },
-      { name: "Instagram", url: "https://www.instagram.com/berkharmansah/", icon: "fab fa-instagram" }
+      { name: "LinkedIn", url: "https://www.linkedin.com/", icon: "fab fa-linkedin-in" },
+      { name: "GitHub", url: "https://github.com/", icon: "fab fa-github" },
+      { name: "Instagram", url: "https://www.instagram.com/", icon: "fab fa-instagram" }
     ]
   },
   contact: {
-    phone: "+90 553 691 5151",
-    email: "yberkharmansah@gmail.com"
+    phone: "+90 555 555 55 55",
+    email: "ornek@mail.com"
   },
   projects: [
     {
@@ -47,8 +45,8 @@ const portfolioData = {
       description: "Yapay zeka destekli içerik üreticileri için özel prompt'lar oluşturan ve yöneten bir Vue.js uygulaması. Firebase ve Pinia ile entegre.",
       technologies: ["Vue.js", "Firebase", "Pinia", "Tailwind CSS"],
       imageUrl: "https://via.placeholder.com/400x250/3B82F6/FFFFFF?text=AI+Prompt+Helper",
-      liveDemoUrl: "https://ai-prompt-helper.firebaseapp.com",
-      githubUrl: "https://github.com/yberkharmansah/ai-prompt-helper",
+      liveDemoUrl: "https://example.com",
+      githubUrl: "https://github.com/example/ai-prompt-helper",
       order: 1
     },
     {
@@ -57,8 +55,8 @@ const portfolioData = {
       description: "Modern bir e-ticaret sitesi arayüzü ve temel işlevsellikleri. Dinamik ürün listeleme ve sepet özellikleri.",
       technologies: ["React", "Node.js", "MongoDB", "Stripe API"],
       imageUrl: "https://via.placeholder.com/400x250/EC4899/FFFFFF?text=E-commerce+Mock",
-      liveDemoUrl: "https://mock-ecommerce.netlify.app",
-      githubUrl: "https://github.com/yberkharmansah/ecommerce-mock",
+      liveDemoUrl: "https://example.com",
+      githubUrl: "https://github.com/example/ecommerce-mock",
       order: 2
     },
     {
@@ -67,8 +65,8 @@ const portfolioData = {
       description: "Gerçek zamanlı hava durumu verilerini çeken ve kullanıcıya gösteren basit bir web uygulaması. API entegrasyonu.",
       technologies: ["JavaScript", "HTML", "CSS", "OpenWeatherMap API"],
       imageUrl: "https://via.placeholder.com/400x250/10B981/FFFFFF?text=Weather+App",
-      liveDemoUrl: "https://weather-app.netlify.app",
-      githubUrl: "https://github.com/yberkharmansah/weather-app",
+      liveDemoUrl: "https://example.com",
+      githubUrl: "https://github.com/example/weather-app",
       order: 3
     }
   ],
